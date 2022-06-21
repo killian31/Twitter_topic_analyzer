@@ -98,7 +98,7 @@ def main(topic, start_date=str(datetime.datetime.now() + dateutil.relativedelta.
                max_font_size=150, random_state=42)
     wc.generate(final_data)
 
-    plt.figure(figsize=(12,6))
+    plt.figure(figsize=(8,6))
     plt.imshow(wc, interpolation="bilinear")
     plt.axis("off")
     plt.title(topic)
