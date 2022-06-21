@@ -54,4 +54,4 @@ def get_texts(topic, start_date = str(datetime.datetime.now() + dateutil.relativ
     return all_texts
 
 if __name__ == "__main__":
-    get_texts(topic="piscine", max_results=100)
+    print("Got", len(get_texts(topic="piscine", max_results=100)), "tweets.")
