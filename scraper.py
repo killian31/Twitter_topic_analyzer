@@ -50,8 +50,8 @@ def scrap(topic, start_date = str(datetime.datetime.now() + dateutil.relativedel
 def get_texts(topic, start_date = str(datetime.datetime.now() + dateutil.relativedelta.relativedelta(days=-6))[:10], end_date = str(datetime.datetime.now())[:10], max_results=15):
     '''max_results has to be between 10 and 150'''
     dic_json = scrap(topic, start_date, end_date, max_results)
-    all_texts = [dic_json["data"][i]["text"] for i in range(max_results)]
+    all_texts = [dic_json["data"][i]["text"] for i in range(len(dic_json["data"]))]
     return all_texts
 
 if __name__ == "__main__":
-    print("Got", len(get_texts(topic="piscine", max_results=100)), "tweets.")
+    print("Got", len(get_texts(topic="fête de la musique", max_results=100)), "tweets.")

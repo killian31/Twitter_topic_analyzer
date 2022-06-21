@@ -2,6 +2,8 @@ from scraper import get_texts
 import re
 import string
 import datetime
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 from sklearn.feature_extraction.text import CountVectorizer
 from spacy.lang.fr.stop_words import STOP_WORDS as fr_stop
 import numpy as np
@@ -84,6 +86,7 @@ def main(topic, start_date=str(datetime.datetime.now() + dateutil.relativedelta.
     list_of_texts = clean_1(list_of_texts)
     list_of_texts = remove_duplicates(list_of_texts)
     list_of_texts = list(filter(None, list_of_texts))
+    list_of_texts = [text.replace(topic, "") for text in list_of_texts]
     print("preprocessing ok")
     print("-"*50)
     data_dtm = document_term(list_of_texts)
@@ -106,8 +109,5 @@ def main(topic, start_date=str(datetime.datetime.now() + dateutil.relativedelta.
     plt.show()
 
 if __name__ == "__main__":
-    main("rugby")
-    pass
-    # x = document_term(["bonjour à tous", "Je m'appelle comment ?", "essai."])
-    # print(add_most_common_words_to_stop_list(x))
-    # main("learning")
+    main(input("Sujet à chercher : "))
+
