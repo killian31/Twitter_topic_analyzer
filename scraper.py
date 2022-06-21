@@ -45,11 +45,13 @@ def scrap(topic, start_date = str(datetime.datetime.now() + dateutil.relativedel
 
     url = create_url(keyword, start_date, end_date, max_results)
     json_response = connect_to_endpoint(url[0], headers, url[1])
-    print(json.dumps(json_response, indent=4, sort_keys=True))
+    return json_response
 
-def create_data(topic, start_date = str(datetime.datetime.now() + dateutil.relativedelta.relativedelta(days=-6))[:10], end_date = str(datetime.datetime.now())[:10], max_results=15):
-    json_file = scrap(topic, start_date, end_date, max_results)
+def get_texts(topic, start_date = str(datetime.datetime.now() + dateutil.relativedelta.relativedelta(days=-6))[:10], end_date = str(datetime.datetime.now())[:10], max_results=15):
+    '''max_results has to be between 10 and 150'''
+    dic_json = scrap(topic, start_date, end_date, max_results)
+    all_texts = [dic_json["data"][i]["text"] for i in range(max_results)]
+    return all_texts
 
 if __name__ == "__main__":
-    pass
-    # scrap("piscine")
+    get_texts(topic="piscine", max_results=100)
