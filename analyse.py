@@ -9,6 +9,7 @@ import pandas as pd
 import dateutil.relativedelta
 from collections import Counter
 from wordcloud import WordCloud
+import matplotlib.pyplot as plt
 
 def remove_emoji(list_of_texts):
     emoji_pattern = re.compile("["
@@ -61,22 +62,21 @@ def remove_duplicates(list_of_texts):
 def document_term(list_of_texts, stop_words=list(fr_stop)):
     cv = CountVectorizer(stop_words=stop_words)
     data_cv = cv.fit_transform(list_of_texts)
-    data_dtm = pd.DataFrame(data_cv.toarray(), columns=cv.get_feature_names())
+    data_dtm = pd.DataFrame(data_cv.toarray(), columns=cv.get_feature_names(), index=[f"tweet_{i}" for i in range(1, len(list_of_texts)+1)])
     return data_dtm
 
-def add_most_common_words_to_stop_list(document_term_matrix, top=30):
+def add_most_common_words_to_stop_list(document_term_matrix, max=30):
     data = document_term_matrix.transpose()
     top_dict = {}
-    for c in data.columns:
-        print(c)
-        top = data.iloc[c].sort_values(ascending=False).head(top)
+    for c in list(data.columns):
+        top = data[c].sort_values(ascending=False).head(max)
         top_dict[c] = list(zip(top.index, top.values))
     words = []
     for index in data.columns:
         top = [word for word, _ in top_dict[index]]
         for t in top:
             words.append(t)
-    add_stop_words = [word for word, count in Counter(words).most_common() if count > len(data.columns)]
+    return [word for word, count in Counter(words).most_common() if count > len(data.columns)]
 
 def main(topic, start_date=str(datetime.datetime.now() + dateutil.relativedelta.relativedelta(days=-6))[:10], end_date=str(datetime.datetime.now())[:10], max_results=35):
     list_of_texts = get_texts(topic=topic, start_date=start_date, end_date=end_date, max_results=max_results)
@@ -84,8 +84,14 @@ def main(topic, start_date=str(datetime.datetime.now() + dateutil.relativedelta.
     list_of_texts = clean_1(list_of_texts)
     list_of_texts = remove_duplicates(list_of_texts)
     list_of_texts = list(filter(None, list_of_texts))
+    print("preprocessing ok")
+    print("-"*50)
     data_dtm = document_term(list_of_texts)
-    add_stop_words = add_most_common_words_to_stop_list(data_dtm, top=30)
+    print("1st dtm ok")
+    print("-"*50)
+    add_stop_words = add_most_common_words_to_stop_list(data_dtm, max=30)
+    print("2nd dtm ok")
+    print("-"*50)
     final_stop_words = add_stop_words + list(fr_stop)
     final_data = " ".join(list_of_texts)
     wc = WordCloud(stopwords=final_stop_words, background_color="white", colormap="Dark2",
@@ -100,7 +106,8 @@ def main(topic, start_date=str(datetime.datetime.now() + dateutil.relativedelta.
     plt.show()
 
 if __name__ == "__main__":
-    # print(document_term(["bonjour à tous", "Je m'appelle comment ?", "essai."]).iloc[0])
     main("rugby")
     pass
+    # x = document_term(["bonjour à tous", "Je m'appelle comment ?", "essai."])
+    # print(add_most_common_words_to_stop_list(x))
     # main("learning")
