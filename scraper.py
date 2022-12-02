@@ -20,7 +20,7 @@ def create_url(keyword, start_date, end_date, max_results = 10):
 
     query_params = {'query': keyword,
                     'start_time': start_date + "T00:00:00.000Z",
-                    'end_time': end_date + "T00:00:00.000Z",
+                    #'end_time': end_date + "T00:00:00.000Z",
                     'max_results': max_results,
                     'expansions': 'author_id,in_reply_to_user_id,geo.place_id',
                     'tweet.fields': 'id,text,author_id,in_reply_to_user_id,geo,conversation_id,created_at,lang,public_metrics,referenced_tweets,reply_settings,source',
@@ -54,4 +54,5 @@ def get_texts(topic, start_date = str(datetime.datetime.now() + dateutil.relativ
     return all_texts
 
 if __name__ == "__main__":
+    print(str(datetime.datetime.now())[:10])
     print("Got", len(get_texts(topic="fête de la musique", max_results=100)), "tweets.")
